@@ -43,7 +43,7 @@ export async function createClient(): Promise<SupabaseClient> {
     let cookieStore;
     try {
       cookieStore = await cookies();
-    } catch (e) {
+    } catch (_) {
       console.warn('Could not access cookies, likely in static generation. Using mock client.');
       return createMockClient();
     }
@@ -60,14 +60,14 @@ export async function createClient(): Promise<SupabaseClient> {
           set(name: string, value: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value, ...options });
-            } catch (e) {
+            } catch (_) {
               // The `set` method was called from a Server Component or during static generation
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value: '', ...options });
-            } catch (e) {
+            } catch (_) {
               // The `delete` method was called from a Server Component or during static generation
             }
           },
