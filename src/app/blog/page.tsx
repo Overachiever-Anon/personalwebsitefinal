@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
 
 interface BlogPost {
   id: string;
@@ -10,88 +12,52 @@ interface BlogPost {
   tags: string[];
   featured: boolean;
   imageUrl?: string;
+  category?: string;
 }
 
-const blogPosts: BlogPost[] = [
-  {
-    id: 'future-of-quantum-computing',
-    title: 'The Future of Quantum Computing: Promises and Challenges',
-    excerpt: 'Exploring the current state of quantum computing research, the challenges ahead, and how it might transform various industries in the coming decades.',
-    date: '2024-06-15',
-    readTime: '8 min read',
-    tags: ['Quantum Computing', 'Technology', 'Research'],
-    featured: true,
-    imageUrl: '/blog/quantum-computing.jpg'
-  },
-  {
-    id: 'interpretable-machine-learning',
-    title: 'Making Machine Learning Models More Interpretable',
-    excerpt: 'A discussion on the importance of interpretability in AI systems and various techniques to make complex models more transparent and explainable.',
-    date: '2024-05-28',
-    readTime: '12 min read',
-    tags: ['Machine Learning', 'AI Ethics', 'Data Science'],
-    featured: true,
-    imageUrl: '/blog/interpretable-ml.jpg'
-  },
-  {
-    id: 'designing-effective-visualizations',
-    title: 'Principles for Designing Effective Data Visualizations',
-    excerpt: 'A guide to creating impactful data visualizations that communicate insights clearly while avoiding common pitfalls in visual design.',
-    date: '2024-05-10',
-    readTime: '6 min read',
-    tags: ['Data Visualization', 'Design', 'Communication'],
-    featured: false,
-    imageUrl: '/blog/data-viz.jpg'
-  },
-  {
-    id: 'game-design-mechanics',
-    title: 'Learning from Game Design: Engagement Mechanics for User Experiences',
-    excerpt: 'How principles from game design can be applied to create more engaging user experiences in software applications and digital interfaces.',
-    date: '2024-04-22',
-    readTime: '9 min read',
-    tags: ['Game Design', 'UX', 'Human-Computer Interaction'],
-    featured: false,
-    imageUrl: '/blog/game-design.jpg'
-  },
-  {
-    id: 'programming-language-evolution',
-    title: 'The Evolution of Programming Languages: Past, Present, and Future',
-    excerpt: 'A historical overview of how programming languages have evolved over time and speculation about future trends in language design.',
-    date: '2024-04-05',
-    readTime: '10 min read',
-    tags: ['Programming', 'Computer Science', 'History'],
-    featured: false
-  },
-  {
-    id: 'ethics-in-technology',
-    title: 'Ethical Considerations in Emerging Technologies',
-    excerpt: 'Discussing the ethical challenges posed by advances in AI, biotechnology, and surveillance systems, and how we might address them.',
-    date: '2024-03-18',
-    readTime: '7 min read',
-    tags: ['Ethics', 'Technology', 'Society'],
-    featured: false
-  },
-  {
-    id: 'academic-writing-tips',
-    title: 'Improving Your Academic Writing: Tips from Years of Research Publishing',
-    excerpt: 'Lessons learned from publishing academic papers and how to communicate complex ideas effectively in scholarly writing.',
-    date: '2024-03-01',
-    readTime: '8 min read',
-    tags: ['Academic', 'Writing', 'Research'],
-    featured: false
-  },
-  {
-    id: 'deep-learning-frameworks',
-    title: 'Comparing Modern Deep Learning Frameworks: Which One to Choose?',
-    excerpt: 'An analysis of popular deep learning frameworks, their strengths, weaknesses, and guidance on selecting the right one for your project.',
-    date: '2024-02-15',
-    readTime: '11 min read',
-    tags: ['Deep Learning', 'Frameworks', 'Programming'],
-    featured: false
-  }
-];
+// Fetch blog posts from Supabase
+async function getBlogPosts(): Promise<BlogPost[]> {
+  const cookieStore = cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+      },
+    }
+  )
 
-export default function BlogPage() {
+  const { data: posts, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('is_published', true)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching blog posts:', error)
+    return []
+  }
+
+  // Map database fields to BlogPost interface
+  return posts.map((post: any) => ({
+    id: post.slug || post.id.toString(),
+    title: post.title,
+    excerpt: post.excerpt || 'No excerpt available',
+    date: new Date(post.created_at).toISOString().split('T')[0], // Format as YYYY-MM-DD
+    readTime: post.read_time || '5 min read',
+    tags: Array.isArray(post.tags) ? post.tags : (post.tags ? [post.tags] : []),
+    featured: post.featured || false,
+    imageUrl: post.image_url || undefined,
+    category: post.category || undefined,
+  }))
+}
+
+export default async function BlogPage() {
+  const blogPosts = await getBlogPosts()
+
   // Separate featured and regular posts
   const featuredPosts = blogPosts.filter(post => post.featured);
   const regularPosts = blogPosts.filter(post => !post.featured);
