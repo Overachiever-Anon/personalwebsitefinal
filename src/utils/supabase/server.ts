@@ -1,7 +1,8 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-export async function createClient() {
+export async function createClient(): Promise<SupabaseClient> {
   const cookieStore = await cookies();
   
   // Check if environment variables are available
@@ -10,22 +11,28 @@ export async function createClient() {
   
   if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Supabase URL or Anon Key not available. Skipping Supabase client creation.');
-    // Return a mock client to prevent errors during build
-    // Mock client with basic structure matching Supabase client shape
-    return {
+    // Create a properly typed mock client
+    const mockClient = {
       from: () => ({
         select: () => ({ data: null, error: new Error('Supabase client not initialized') }),
         insert: () => ({ data: null, error: new Error('Supabase client not initialized') }),
         update: () => ({ data: null, error: new Error('Supabase client not initialized') }),
         delete: () => ({ data: null, error: new Error('Supabase client not initialized') }),
+        match: () => ({ data: null, error: new Error('Supabase client not initialized') }),
       }),
       auth: {
         getUser: async () => ({ data: { user: null }, error: null }),
         getSession: async () => ({ data: { session: null }, error: null }),
       },
-      storage: { from: () => ({ upload: async () => ({ error: new Error('Supabase client not initialized') }) }) }
-    // Using type assertion with unknown is safer than 'any'
-    } as unknown;
+      storage: { 
+        from: () => ({
+          upload: async () => ({ error: new Error('Supabase client not initialized') }),
+          getPublicUrl: () => ({ data: { publicUrl: '' } })
+        })
+      }
+    } as unknown as SupabaseClient;
+    
+    return mockClient;
   }
 
   return createServerClient(
