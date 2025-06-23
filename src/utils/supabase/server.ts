@@ -11,6 +11,7 @@ export async function createClient() {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Supabase URL or Anon Key not available. Skipping Supabase client creation.');
     // Return a mock client to prevent errors during build
+    // Mock client with basic structure matching Supabase client shape
     return {
       from: () => ({
         select: () => ({ data: null, error: new Error('Supabase client not initialized') }),
@@ -23,7 +24,8 @@ export async function createClient() {
         getSession: async () => ({ data: { session: null }, error: null }),
       },
       storage: { from: () => ({ upload: async () => ({ error: new Error('Supabase client not initialized') }) }) }
-    } as any;
+    // Using type assertion with unknown is safer than 'any'
+    } as unknown;
   }
 
   return createServerClient(
