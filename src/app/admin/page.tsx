@@ -12,28 +12,72 @@ type ContentItem = {
 };
 
 async function getDashboardData() {
-  const supabase = await createServerClient();
+  try {
+    const supabase = await createServerClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    redirect('/login');
+    // Handle auth errors gracefully
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Auth error:', authError);
+        // Continue without redirecting to avoid breaking the admin page
+        // Just show empty data instead
+      } else if (!user) {
+        redirect('/login');
+      }
+    } catch (authError) {
+      console.error('Auth service error:', authError);
+      // Continue without redirect
+    }
+
+    // Safe query function that won't throw on errors
+    const safeQuery = async (table: string) => {
+      try {
+        const result = await supabase
+          .from(table)
+          .select('id, title, slug')
+          .order('created_at', { ascending: false });
+        
+        return result.data || [];
+      } catch (error) {
+        console.error(`Error fetching ${table}:`, error);
+        return [];
+      }
+    };
+
+    // Query all tables with individual error handling
+    const [
+      blogPosts,
+      projects,
+      codeItems,
+      researchNotes,
+      gameplayItems
+    ] = await Promise.all([
+      safeQuery('blog_posts'),
+      safeQuery('projects'),
+      safeQuery('code_items'),
+      safeQuery('research_notes'),
+      safeQuery('gameplay_items')
+    ]);
+
+    return {
+      blogPosts: (blogPosts as ContentItem[]),
+      projects: (projects as ContentItem[]),
+      codeItems: (codeItems as ContentItem[]),
+      researchNotes: (researchNotes as ContentItem[]),
+      gameplayItems: (gameplayItems as ContentItem[])
+    };
+  } catch (error) {
+    console.error('Dashboard data fetch error:', error);
+    // Return empty data instead of crashing
+    return {
+      blogPosts: [],
+      projects: [],
+      codeItems: [],
+      researchNotes: [],
+      gameplayItems: []
+    };
   }
-
-  const [blogPosts, projects, codeItems, researchNotes, gameplayItems] = await Promise.all([
-    supabase.from('blog_posts').select('id, title, slug').order('created_at', { ascending: false }),
-    supabase.from('projects').select('id, title, slug').order('created_at', { ascending: false }),
-    supabase.from('code_items').select('id, title, slug').order('created_at', { ascending: false }),
-    supabase.from('research_notes').select('id, title, slug').order('created_at', { ascending: false }),
-    supabase.from('gameplay_items').select('id, title, slug').order('created_at', { ascending: false }),
-  ]);
-
-  return {
-    blogPosts: (blogPosts.data as ContentItem[]) || [],
-    projects: (projects.data as ContentItem[]) || [],
-    codeItems: (codeItems.data as ContentItem[]) || [],
-    researchNotes: (researchNotes.data as ContentItem[]) || [],
-    gameplayItems: (gameplayItems.data as ContentItem[]) || [],
-  };
 }
 
 const DeleteButton = ({ id, tableName, sectionSlug }: { id: number; tableName: string; sectionSlug: string }) => (

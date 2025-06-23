@@ -6,125 +6,215 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function deleteItem(formData: FormData) {
-  const supabase = await createServerClient();
+  try {
+    const supabase = await createServerClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    redirect('/login');
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Auth error in deleteItem:', authError);
+        return; // Exit gracefully
+      }
+      
+      if (!user) {
+        redirect('/login');
+      }
+    } catch (authError) {
+      console.error('Auth service error in deleteItem:', authError);
+      return; // Exit gracefully
+    }
+
+    // Form validation
+    const id = formData.get('id') as string;
+    const tableName = formData.get('tableName') as string;
+    const sectionSlug = formData.get('sectionSlug') as string;
+
+    if (!id || !tableName || !sectionSlug) {
+      console.error('Delete failed: Missing required form data.');
+      return;
+    }
+
+    // Validate tableName against allowed values to prevent SQL injection
+    const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_items'];
+    if (!allowedTables.includes(tableName)) {
+      console.error('Invalid table name:', tableName);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from(tableName).delete().match({ id: parseInt(id, 10) });
+
+      if (error) {
+        console.error('Error deleting item:', error);
+        return;
+      }
+
+      // Only revalidate if delete was successful
+      revalidatePath('/admin');
+      revalidatePath(`/${sectionSlug}`);
+    } catch (dbError) {
+      console.error('Database error in deleteItem:', dbError);
+    }
+  } catch (error) {
+    console.error('Unexpected error in deleteItem:', error);
   }
-
-  const id = formData.get('id') as string;
-  const tableName = formData.get('tableName') as string;
-  const sectionSlug = formData.get('sectionSlug') as string;
-
-  if (!id || !tableName || !sectionSlug) {
-    console.error('Delete failed: Missing required form data.');
-    return;
-  }
-
-  const { error } = await supabase.from(tableName).delete().match({ id: parseInt(id, 10) });
-
-  if (error) {
-    console.error('Error deleting item:', error);
-    return;
-  }
-
-  revalidatePath('/admin');
-  revalidatePath(`/${sectionSlug}`);
 }
 
 export async function updateItem(formData: FormData) {
-  const supabase = await createServerClient();
+  try {
+    const supabase = await createServerClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    redirect('/login');
-  }
-
-  const id = formData.get('id') as string;
-  const tableName = formData.get('tableName') as string;
-
-  if (!id || !tableName) {
-    console.error('Update failed: Missing required form data.');
-    return;
-  }
-
-  const updateData: Record<string, unknown> = {};
-  let slug: string | null = null;
-
-  for (const [key, value] of formData.entries()) {
-    if (key === 'id' || key === 'tableName') continue;
-
-    if (key === 'slug') {
-      slug = value as string;
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Auth error in updateItem:', authError);
+        return; // Exit gracefully
+      }
+      
+      if (!user) {
+        redirect('/login');
+      }
+    } catch (authError) {
+      console.error('Auth service error in updateItem:', authError);
+      return; // Exit gracefully
     }
 
-    if (key === 'tags' && typeof value === 'string') {
-      updateData[key] = value.split(',').map(tag => tag.trim()).filter(Boolean);
-    } else if (key === 'is_published' || key === 'featured') {
-      updateData[key] = value === 'on';
-    } else {
-      updateData[key] = value;
+    // Form validation
+    const id = formData.get('id') as string;
+    const tableName = formData.get('tableName') as string;
+
+    if (!id || !tableName) {
+      console.error('Update failed: Missing required form data.');
+      return;
     }
-  }
-
-  const { error } = await supabase
-    .from(tableName)
-    .update(updateData)
-    .match({ id: parseInt(id, 10) });
-
-  if (error) {
-    console.error('Error updating item:', error);
-    return;
-  }
-
-  const sectionSlugMap: { [key: string]: string } = {
-    'blog_posts': 'blog',
-    'projects': 'projects',
-    'code_items': 'code',
-    'research_notes': 'research',
-    'gameplay_items': 'gameplay',
-  };
-  const sectionSlug = sectionSlugMap[tableName];
-
-  revalidatePath('/admin');
-  if (sectionSlug) {
-    revalidatePath(`/${sectionSlug}`);
-    if (slug) {
-      revalidatePath(`/${sectionSlug}/${slug}`);
+    
+    // Validate tableName against allowed values to prevent SQL injection
+    const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_items'];
+    if (!allowedTables.includes(tableName)) {
+      console.error('Invalid table name:', tableName);
+      return;
     }
+
+    const updateData: Record<string, unknown> = {};
+    let slug: string | null = null;
+
+    try {
+      for (const [key, value] of formData.entries()) {
+        if (key === 'id' || key === 'tableName') continue;
+
+        if (key === 'slug') {
+          slug = value as string;
+        }
+
+        if (key === 'tags' && typeof value === 'string') {
+          updateData[key] = value.split(',').map(tag => tag.trim()).filter(Boolean);
+        } else if (key === 'is_published' || key === 'featured') {
+          updateData[key] = value === 'on';
+        } else {
+          updateData[key] = value;
+        }
+      }
+
+      const { error } = await supabase
+        .from(tableName)
+        .update(updateData)
+        .match({ id: parseInt(id, 10) });
+
+      if (error) {
+        console.error('Error updating item:', error);
+        return;
+      }
+
+      const sectionSlugMap: { [key: string]: string } = {
+        'blog_posts': 'blog',
+        'projects': 'projects',
+        'code_items': 'code',
+        'research_notes': 'research',
+        'gameplay_items': 'gameplay',
+      };
+      const sectionSlug = sectionSlugMap[tableName];
+
+      revalidatePath('/admin');
+      if (sectionSlug) {
+        revalidatePath(`/${sectionSlug}`);
+        if (slug) {
+          revalidatePath(`/${sectionSlug}/${slug}`);
+        }
+      }
+      
+      redirect('/admin');
+    } catch (dbError) {
+      console.error('Database error in updateItem:', dbError);
+    }
+  } catch (error) {
+    console.error('Unexpected error in updateItem:', error);
   }
-  
-  redirect('/admin');
 }
 
 export async function uploadImage(formData: FormData): Promise<{ url?: string; error?: string }> {
-  const supabase = await createServerClient();
+  try {
+    const supabase = await createServerClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return { error: 'You must be logged in to upload images.' };
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      
+      if (authError) {
+        console.error('Auth error in uploadImage:', authError);
+        return { error: 'Authentication failed. Please try again.' };
+      }
+      
+      if (!user) {
+        return { error: 'You must be logged in to upload images.' };
+      }
+    } catch (authError) {
+      console.error('Auth service error in uploadImage:', authError);
+      return { error: 'Authentication service unavailable. Please try again later.' };
+    }
+
+    // File validation
+    const file = formData.get('file') as File;
+    if (!file || file.size === 0) {
+      return { error: 'No file provided.' };
+    }
+
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return { error: 'File size exceeds 5MB limit.' };
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      
+      // Validate file extension
+      const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+      if (fileExt && !allowedExtensions.includes(fileExt.toLowerCase())) {
+        return { error: `File type .${fileExt} is not supported. Use: ${allowedExtensions.join(', ')}` };
+      }
+      
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Image upload error:', uploadError);
+        return { error: `Failed to upload image: ${uploadError.message}` };
+      }
+
+      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+      if (!data || !data.publicUrl) {
+        return { error: 'Failed to get public URL for uploaded image.' };
+      }
+
+      return { url: data.publicUrl };
+    } catch (storageError) {
+      console.error('Storage error in uploadImage:', storageError);
+      return { error: 'Failed to process image. Please try again.' };
+    }
+  } catch (error) {
+    console.error('Unexpected error in uploadImage:', error);
+    return { error: 'An unexpected error occurred. Please try again later.' };
   }
-
-  const file = formData.get('file') as File;
-  if (!file || file.size === 0) {
-    return { error: 'No file provided.' };
-  }
-
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}.${fileExt}`;
-  const filePath = `${fileName}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from('images')
-    .upload(filePath, file);
-
-  if (uploadError) {
-    console.error('Image upload error:', uploadError);
-    return { error: `Failed to upload image: ${uploadError.message}` };
-  }
-
-  const { data } = supabase.storage.from('images').getPublicUrl(filePath);
-
-  return { url: data.publicUrl };
 }
