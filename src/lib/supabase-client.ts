@@ -1,9 +1,9 @@
-import { createSupabaseClient } from '@/utils/supabase'
+import { createBrowserClient } from '@/utils/supabase'
 import type { BlogPost, LolGameplay, Project, ResearchNote } from '@/types/database'
 
 // Projects
 export async function getProjects() {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -18,7 +18,7 @@ export async function getProjects() {
 }
 
 export async function getFeaturedProjects() {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -34,7 +34,7 @@ export async function getFeaturedProjects() {
 }
 
 export async function getProjectById(id: string) {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -51,7 +51,7 @@ export async function getProjectById(id: string) {
 
 // Blog Posts
 export async function getBlogPosts(publishedOnly = true) {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   let query = supabase
     .from('blog_posts')
     .select('*')
@@ -71,7 +71,7 @@ export async function getBlogPosts(publishedOnly = true) {
 }
 
 export async function getBlogPostBySlug(slug: string) {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('blog_posts')
     .select('*')
@@ -88,7 +88,7 @@ export async function getBlogPostBySlug(slug: string) {
 
 // Research Notes
 export async function getResearchNotes() {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('research_notes')
     .select('*')
@@ -103,7 +103,7 @@ export async function getResearchNotes() {
 }
 
 export async function getResearchNoteById(id: string) {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('research_notes')
     .select('*')
@@ -120,7 +120,7 @@ export async function getResearchNoteById(id: string) {
 
 // LoL Gameplay
 export async function getLolGameplayVideos() {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('lol_gameplay')
     .select('*')
@@ -135,7 +135,7 @@ export async function getLolGameplayVideos() {
 }
 
 export async function getLolGameplayById(id: string) {
-  const supabase = createSupabaseClient()
+  const supabase = createBrowserClient()
   const { data, error } = await supabase
     .from('lol_gameplay')
     .select('*')

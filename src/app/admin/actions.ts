@@ -1,12 +1,12 @@
 // src/app/admin/actions.ts
 'use server';
 
-import { createClient } from '@/utils/supabase/server';
+import { createServerClient } from '@/utils/supabase';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function deleteItem(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -34,7 +34,7 @@ export async function deleteItem(formData: FormData) {
 }
 
 export async function updateItem(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -99,7 +99,7 @@ export async function updateItem(formData: FormData) {
 }
 
 export async function uploadImage(formData: FormData): Promise<{ url?: string; error?: string }> {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {

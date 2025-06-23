@@ -1,5 +1,5 @@
 // src/app/admin/page.tsx
-import { createClient } from '@/utils/supabase/server';
+import { createServerClient } from '@/utils/supabase';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { deleteItem } from './actions';
@@ -12,7 +12,7 @@ type ContentItem = {
 };
 
 async function getDashboardData() {
-  const supabase = await createClient();
+  const supabase = await createServerClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
