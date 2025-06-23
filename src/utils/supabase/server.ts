@@ -6,7 +6,11 @@ import { SupabaseClient } from '@supabase/supabase-js';
 const createMockClient = () => {
   const mockClient = {
     from: () => ({
-      select: () => ({ data: null, error: new Error('Supabase client not initialized') }),
+      select: () => ({
+        data: null, 
+        error: new Error('Supabase client not initialized'),
+        order: () => Promise.resolve({ data: null, error: new Error('Supabase client not initialized') })
+      }),
       insert: () => ({ data: null, error: new Error('Supabase client not initialized') }),
       update: () => ({ data: null, error: new Error('Supabase client not initialized') }),
       delete: () => ({ data: null, error: new Error('Supabase client not initialized') }),
@@ -43,7 +47,7 @@ export async function createClient(): Promise<SupabaseClient> {
     let cookieStore;
     try {
       cookieStore = await cookies();
-    } catch (_) {
+    } catch {
       console.warn('Could not access cookies, likely in static generation. Using mock client.');
       return createMockClient();
     }
@@ -60,14 +64,14 @@ export async function createClient(): Promise<SupabaseClient> {
           set(name: string, value: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value, ...options });
-            } catch (_) {
+            } catch {
               // The `set` method was called from a Server Component or during static generation
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value: '', ...options });
-            } catch (_) {
+            } catch {
               // The `delete` method was called from a Server Component or during static generation
             }
           },
