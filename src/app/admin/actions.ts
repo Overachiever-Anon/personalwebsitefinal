@@ -5,58 +5,44 @@ import { createServerClient } from '@/utils/supabase';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-export async function deleteItem(formData: FormData) {
+export async function deleteItem(
+  tableName: string, 
+  id: number, 
+  sectionSlug: string
+): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = await createServerClient();
 
-    try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError) {
-        console.error('Auth error in deleteItem:', authError);
-        return; // Exit gracefully
-      }
-      
-      if (!user) {
-        redirect('/login');
-      }
-    } catch (authError) {
-      console.error('Auth service error in deleteItem:', authError);
-      return; // Exit gracefully
-    }
-
-    // Form validation
-    const id = formData.get('id') as string;
-    const tableName = formData.get('tableName') as string;
-    const sectionSlug = formData.get('sectionSlug') as string;
-
-    if (!id || !tableName || !sectionSlug) {
-      console.error('Delete failed: Missing required form data.');
-      return;
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('Auth error in deleteItem:', authError);
+      return { success: false, error: 'Authentication failed.' };
     }
 
     // Validate tableName against allowed values to prevent SQL injection
     const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_items'];
     if (!allowedTables.includes(tableName)) {
       console.error('Invalid table name:', tableName);
-      return;
+      return { success: false, error: 'Invalid table name provided.' };
     }
 
-    try {
-      const { error } = await supabase.from(tableName).delete().match({ id: parseInt(id, 10) });
+    const { error: deleteError } = await supabase.from(tableName).delete().match({ id });
 
-      if (error) {
-        console.error('Error deleting item:', error);
-        return;
-      }
-
-      // Only revalidate if delete was successful
-      revalidatePath('/admin');
-      revalidatePath(`/${sectionSlug}`);
-    } catch (dbError) {
-      console.error('Database error in deleteItem:', dbError);
+    if (deleteError) {
+      console.error('Error deleting item:', deleteError);
+      return { success: false, error: deleteError.message };
     }
+
+    // Only revalidate if delete was successful
+    revalidatePath('/admin');
+    revalidatePath(`/${sectionSlug}`);
+    
+    return { success: true };
+
   } catch (error) {
     console.error('Unexpected error in deleteItem:', error);
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred.';
+    return { success: false, error: message };
   }
 }
 
