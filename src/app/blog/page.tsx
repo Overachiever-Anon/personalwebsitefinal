@@ -206,7 +206,7 @@ export default function BlogPage() {
                     <div className="mt-auto">
                       {/* Tags */}
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {post.tags.map((tag, i) => (
+                        {post.tags && post.tags.map((tag, i) => (
                           <span 
                             key={i}
                             className="px-2 py-0.5 bg-background/50 rounded-full text-xs"

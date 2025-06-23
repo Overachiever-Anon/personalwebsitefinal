@@ -18,51 +18,43 @@ interface ProjectItem {
 
 const projects: ProjectItem[] = [
   {
-    id: 'code-analysis-tool',
-    title: 'AI-Driven Code Analysis Tool',
-    description: 'An innovative tool leveraging machine learning to analyze code quality, identify potential bugs, and suggest optimizations across multiple programming languages.',
-    tags: ['Machine Learning', 'Software Engineering', 'Python', 'TypeScript'],
-    image: '/projects/code-analysis.jpg',
+    id: '1',
+    title: 'Quantum Machine Learning Framework',
+    description: 'A framework for implementing quantum machine learning algorithms on near-term quantum devices.',
+    tags: ['Quantum Computing', 'Machine Learning', 'Python'],
+    image: '/projects/quantum-ml.jpg',
     featured: true
   },
   {
-    id: 'quantum-algorithm',
-    title: 'Quantum Algorithm Optimization',
-    description: 'Research project focused on optimizing quantum computing algorithms for practical applications in cryptography and data processing.',
-    tags: ['Quantum Computing', 'Algorithms', 'Research', 'Python'],
-    image: '/projects/quantum.jpg',
+    id: '2',
+    title: 'Interactive Data Visualization Dashboard',
+    description: 'A real-time dashboard for visualizing complex datasets with interactive elements for data exploration.',
+    tags: ['Data Visualization', 'D3.js', 'React'],
+    image: '/projects/data-viz.jpg',
     featured: true
   },
   {
-    id: 'data-viz-library',
-    title: 'Advanced Data Visualization Library',
-    description: 'Open-source library providing innovative visualization components for complex datasets in scientific and business intelligence domains.',
-    tags: ['Data Visualization', 'JavaScript', 'D3.js', 'Open Source'],
-    image: '/projects/data-viz.jpg', 
-    featured: false
-  },
-  {
-    id: 'neural-network-framework',
-    title: 'Custom Neural Network Framework',
-    description: 'A lightweight neural network framework designed for educational purposes with clear visualizations of network operations.',
-    tags: ['Deep Learning', 'Python', 'Education', 'TensorFlow'],
+    id: '3',
+    title: 'Neural Network From Scratch',
+    description: 'Implementation of neural network architectures from scratch using only numpy for educational purposes.',
+    tags: ['Machine Learning', 'Python', 'NumPy'],
     image: '/projects/neural-network.jpg',
     featured: false
   },
   {
-    id: 'augmented-reality-prototype',
-    title: 'Academic Research AR Prototype',
-    description: 'Augmented reality prototype demonstrating novel interaction techniques for scientific data exploration in laboratory environments.',
-    tags: ['Augmented Reality', 'Unity', 'C#', 'UX Research'],
-    image: '/projects/ar-prototype.jpg',
+    id: '4',
+    title: 'Research Paper Recommendation System',
+    description: 'A system that uses NLP and collaborative filtering to recommend research papers based on user interests.',
+    tags: ['NLP', 'Recommendation Systems', 'Python'],
+    image: '/projects/paper-rec.jpg',
     featured: false
   },
   {
-    id: 'computational-linguistics',
-    title: 'Computational Linguistics Parser',
-    description: 'A natural language processing tool that analyzes linguistic structures with applications in automated translation and text analysis.',
-    tags: ['NLP', 'Linguistics', 'Python', 'Research'],
-    image: '/projects/linguistics.jpg',
+    id: '5',
+    title: 'Algorithmic Trading Strategy Backtester',
+    description: 'Platform for backtesting algorithmic trading strategies against historical market data.',
+    tags: ['Finance', 'Algorithms', 'Python'],
+    image: '/projects/algo-trading.jpg',
     featured: false
   }
 ];
@@ -121,19 +113,17 @@ export default async function ProjectsPage() {
                       </div>
                     </div>
                     
-                    {/* Project Info */}
-                    <div className="md:w-1/2 p-6 md:p-8">
-                      <h3 className="text-2xl font-bold mb-3 group-hover:text-accent transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-text-secondary mb-4">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {project.tags.map((tag, i) => (
+                    {/* Project Content */}
+                    <div className="p-8 md:w-1/2 flex flex-col">
+                      <h3 className="text-2xl font-bold mb-3 group-hover:text-accent transition-colors">{project.title}</h3>
+                      <p className="text-text-secondary mb-6">{project.description}</p>
+                      
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-2 mb-5">
+                        {project.tags && project.tags.map((tag, i) => (
                           <span 
-                            key={i} 
-                            className="px-3 py-1 bg-background/50 rounded-full text-xs font-medium"
+                            key={i}
+                            className="px-2 py-0.5 bg-background/50 rounded-full text-xs"
                           >
                             {tag}
                           </span>
