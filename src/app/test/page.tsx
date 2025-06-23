@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function TestPage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
@@ -6,12 +8,12 @@ export default function TestPage() {
         <p className="text-xl mb-8">This is a test page with standard Tailwind classes.</p>
         
         <div className="flex gap-4 mb-8">
-          <a href="/projects" className="px-4 py-2 bg-blue-600 text-white rounded">
+          <Link href="/projects" className="px-4 py-2 bg-blue-600 text-white rounded">
             Projects
-          </a>
-          <a href="/" className="px-4 py-2 border border-gray-600 text-white rounded">
+          </Link>
+          <Link href="/" className="px-4 py-2 border border-gray-600 text-white rounded">
             Home
-          </a>
+          </Link>
         </div>
         
         <div className="grid grid-cols-2 gap-4">

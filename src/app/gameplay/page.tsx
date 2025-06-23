@@ -15,7 +15,7 @@ interface GameplayItem {
 }
 
 async function getGameplayItems(): Promise<GameplayItem[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('gameplay_items')

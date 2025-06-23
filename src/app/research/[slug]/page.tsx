@@ -7,7 +7,7 @@ import rehypeRaw from 'rehype-raw';
 export const revalidate = 3600;
 
 async function getResearchNote(slug: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('research_notes')
@@ -22,8 +22,9 @@ async function getResearchNote(slug: string) {
   return data;
 }
 
-export default async function ResearchNotePage({ params }: { params: { slug: string } }) {
-  const note = await getResearchNote(params.slug);
+export default async function ResearchNotePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const note = await getResearchNote(slug);
 
   return (
     <div className="container-main py-12 md:py-20">

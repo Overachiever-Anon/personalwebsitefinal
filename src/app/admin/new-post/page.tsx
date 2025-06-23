@@ -23,7 +23,7 @@ export default function NewPostPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     // The form will submit naturally, we just need to show loading state
   };

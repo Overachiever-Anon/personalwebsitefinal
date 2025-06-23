@@ -7,7 +7,7 @@ import EditForm from './edit-form';
 export const dynamic = 'force-dynamic';
 
 async function getItemData(tableName: string, id: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -28,8 +28,8 @@ async function getItemData(tableName: string, id: string) {
   return data;
 }
 
-export default async function EditItemPage({ params }: { params: { tableName: string; id: string } }) {
-  const { tableName, id } = params;
+export default async function EditItemPage({ params }: { params: Promise<{ tableName: string; id: string }> }) {
+  const { tableName, id } = await params;
   const item = await getItemData(tableName, id);
 
   const sectionTitleMap: { [key: string]: string } = {

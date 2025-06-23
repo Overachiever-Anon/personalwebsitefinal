@@ -9,7 +9,7 @@ import rehypeRaw from 'rehype-raw';
 export const revalidate = 3600;
 
 async function getProject(slug: string) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -35,8 +35,9 @@ async function getProject(slug: string) {
   return data;
 }
 
-export default async function ProjectPage({ params }: { params: { slug: string } }) {
-  const project = await getProject(params.slug);
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = await getProject(slug);
 
   return (
     <div className="container-main py-12 md:py-20">

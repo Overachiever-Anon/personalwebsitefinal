@@ -18,7 +18,7 @@ interface ResearchNote {
 }
 
 async function getResearchNotes(): Promise<ResearchNote[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('research_notes')

@@ -7,20 +7,12 @@ import rehypeRaw from 'rehype-raw'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// This function tells Next.js which routes to pre-render at build time.
-export async function generateStaticParams() {
-  const supabase = createClient()
-
-  const { data: posts } = await supabase.from('blog_posts').select('slug')
-
-  return posts?.map(({ slug }) => ({
-    slug,
-  })) || []
-}
+// Cannot use generateStaticParams because it would require cookies() which can't be used at build time
+// Dynamic routes will be generated at request time
 
 // Fetches the data for a single post
 async function getPost(slug: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { data: post, error } = await supabase
         .from('blog_posts')
@@ -36,8 +28,9 @@ async function getPost(slug: string) {
 }
 
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-    const post = await getPost(params.slug)
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPost(slug)
 
     return (
         <article className="container-main py-12">

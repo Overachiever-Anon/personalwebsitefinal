@@ -8,7 +8,16 @@ import ImageUpload from '@/components/admin/ImageUpload';
 // A type for the form action prop
 type FormAction = (formData: FormData) => Promise<void>;
 
-export default function EditForm({ item, tableName, action }: { item: any; tableName: string; action: FormAction }) {
+// Define a proper type for database items
+interface DatabaseItem {
+  id: string;
+  created_at?: string;
+  updated_at?: string;
+  content?: string;
+  [key: string]: unknown;
+}
+
+export default function EditForm({ item, tableName, action }: { item: DatabaseItem; tableName: string; action: FormAction }) {
   const [content, setContent] = useState(item.content || '');
 
   // When the component mounts, check if we are editing a blog post and set the editor theme
@@ -19,7 +28,7 @@ export default function EditForm({ item, tableName, action }: { item: any; table
     }
   }, [tableName]);
 
-  const renderField = (key: string, value: any) => {
+  const renderField = (key: string, value: unknown) => {
     if (['id', 'created_at', 'updated_at'].includes(key)) return null;
 
     const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -27,7 +36,7 @@ export default function EditForm({ item, tableName, action }: { item: any; table
     if (key.includes('image_url')) {
       return (
         <div key={key}>
-          <ImageUpload name={key} defaultValue={value} />
+          <ImageUpload name={key} defaultValue={typeof value === 'string' ? value : ''} />
         </div>
       );
     }
@@ -49,7 +58,7 @@ export default function EditForm({ item, tableName, action }: { item: any; table
               <textarea
                 id={key}
                 name={key}
-                defaultValue={value || ''}
+                defaultValue={typeof value === 'string' ? value : ''}
                 rows={8}
                 className="input-field"
               />
@@ -94,7 +103,7 @@ export default function EditForm({ item, tableName, action }: { item: any; table
           type="text"
           id={key}
           name={key}
-          defaultValue={value || ''}
+          defaultValue={typeof value === 'string' ? value : typeof value === 'number' ? String(value) : ''}
           className="input-field"
         />
       </div>

@@ -26,7 +26,7 @@ function processTags(tagsString: string): string[] {
 }
 
 export async function createPost(formData: FormData) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Check if user is authenticated
   const { data: { user } } = await supabase.auth.getUser()
@@ -55,7 +55,7 @@ export async function createPost(formData: FormData) {
   const tags = processTags(tagsString)
 
   // Prepare the post data
-  const postData: any = {
+  const postData: Record<string, unknown> = {
     title,
     content,
     excerpt,

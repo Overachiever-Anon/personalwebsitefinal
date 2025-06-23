@@ -8,7 +8,7 @@ import rehypeRaw from 'rehype-raw';
 export const revalidate = 3600;
 
 async function getCodeItem(slug: string) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -34,8 +34,9 @@ async function getCodeItem(slug: string) {
   return data;
 }
 
-export default async function CodeItemPage({ params }: { params: { slug: string } }) {
-  const item = await getCodeItem(params.slug);
+export default async function CodeItemPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const item = await getCodeItem(slug);
 
   return (
     <div className="container-main py-12 md:py-20">

@@ -32,7 +32,7 @@ export default function NewGameplayPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     // The form will submit naturally, we just need to show loading state
   };

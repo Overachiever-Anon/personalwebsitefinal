@@ -1,7 +1,8 @@
 // src/app/login/page.tsx
 import { signIn } from './actions'
 
-export default function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   return (
     <div className="container-main py-12">
       <div className="max-w-md mx-auto card p-8">
@@ -34,10 +35,10 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
               required
             />
           </div>
-          {searchParams.error && (
-            <p className="bg-red-500/20 text-red-300 p-3 rounded-md mb-4 text-center">
-              {searchParams.error}
-            </p>
+          {error && (
+            <div className="mb-4 text-red-500 text-sm text-center">
+              Login failed. Please try again.
+            </div>
           )}
           <button
             type="submit"

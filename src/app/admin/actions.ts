@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function deleteItem(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -34,7 +34,7 @@ export async function deleteItem(formData: FormData) {
 }
 
 export async function updateItem(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -49,7 +49,7 @@ export async function updateItem(formData: FormData) {
     return;
   }
 
-  const updateData: { [key: string]: any } = {};
+  const updateData: Record<string, unknown> = {};
   let slug: string | null = null;
 
   for (const [key, value] of formData.entries()) {
@@ -99,7 +99,7 @@ export async function updateItem(formData: FormData) {
 }
 
 export async function uploadImage(formData: FormData): Promise<{ url?: string; error?: string }> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {

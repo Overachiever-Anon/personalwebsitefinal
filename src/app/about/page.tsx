@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function AboutPage() {
   return (
@@ -16,7 +15,7 @@ export default function AboutPage() {
             
             <div className="md:flex-1">
               <p className="text-lg mb-4">
-                Hello! I'm <span className="text-accent font-medium">Andreas Kurz</span>, a researcher, 
+                Hello! I&apos;m <span className="text-accent font-medium">Andreas Kurz</span>, a researcher, 
                 developer, and gaming enthusiast with a passion for exploring the intersection of 
                 technology, design, and human experience.
               </p>
@@ -82,7 +81,7 @@ export default function AboutPage() {
           <h2>Biography</h2>
           
           <p>
-            I'm currently a Research Scientist at <a href="#" className="font-medium">Tech Research Institute</a>, 
+            I&apos;m currently a Research Scientist at <a href="#" className="font-medium">Tech Research Institute</a>, 
             where I lead projects exploring quantum computing algorithms and their applications in optimization problems.
             Previously, I worked as a Senior Software Engineer at <a href="#" className="font-medium">Future Labs</a> developing 
             advanced data visualization tools for scientific applications.
@@ -96,16 +95,16 @@ export default function AboutPage() {
           </p>
           
           <p>
-            When I'm not working on research or coding projects, you might find me experimenting with 
+            When I&apos;m not working on research or coding projects, you might find me experimenting with 
             game development, exploring virtual worlds, or writing about technology and its implications 
-            for society. I'm also passionate about open-source software and regularly contribute to 
+            for society. I&apos;m also passionate about open-source software and regularly contribute to 
             projects that align with my interests.
           </p>
           
           <h2>Research Interests</h2>
           
           <ul>
-            <li>Quantum Computing & Quantum Information</li>
+            <li>Quantum Computing &amp; Quantum Information</li>
             <li>Machine Learning Interpretability</li>
             <li>Scientific Data Visualization</li>
             <li>Human-Computer Interaction</li>
@@ -158,15 +157,15 @@ export default function AboutPage() {
           
           <ul>
             <li>
-              <strong>Kurz, A.</strong>, Smith, J., & Zhang, L. (2024). "Advances in Quantum Computing Algorithms for Optimization Problems." 
+              <strong>Kurz, A.</strong>, Smith, J., &amp; Zhang, L. (2024). &quot;Advances in Quantum Computing Algorithms for Optimization Problems.&quot; 
               <em>Journal of Quantum Information Processing</em>.
             </li>
             <li>
-              <strong>Kurz, A.</strong>, Johnson, M., & Chen, R. (2023). "Improving Neural Network Interpretability Through Integrated Gradients." 
+              <strong>Kurz, A.</strong>, Johnson, M., &amp; Chen, R. (2023). &quot;Improving Neural Network Interpretability Through Integrated Gradients.&quot; 
               <em>Neural Information Processing Systems</em>.
             </li>
             <li>
-              <strong>Kurz, A.</strong> & Williams, T. (2023). "Novel Data Visualization Techniques for High-Dimensional Scientific Datasets." 
+              <strong>Kurz, A.</strong> &amp; Williams, T. (2023). &quot;Novel Data Visualization Techniques for High-Dimensional Scientific Datasets.&quot; 
               <em>IEEE Visualization Conference</em>.
             </li>
           </ul>
@@ -212,7 +211,7 @@ export default function AboutPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <svg className="w-5 h-5 mt-1 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 01-2-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>Office Hours: Mon-Fri 10:00-16:00 CET</span>
                   </li>

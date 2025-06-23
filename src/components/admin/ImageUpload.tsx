@@ -69,7 +69,7 @@ export default function ImageUpload({
         // Brief success feedback
         setTimeout(() => setUploadProgress(0), 1000);
       }
-    } catch (err) {
+    } catch {
       clearInterval(progressInterval);
       setError('Upload failed. Please try again.');
     }

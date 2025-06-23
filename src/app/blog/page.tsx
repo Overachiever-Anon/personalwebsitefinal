@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 
@@ -15,9 +14,22 @@ interface BlogPost {
   category?: string;
 }
 
+interface DatabaseBlogPost {
+  id: string;
+  slug?: string;
+  title: string;
+  excerpt?: string;
+  created_at: string;
+  read_time?: string;
+  tags?: string;
+  featured?: boolean;
+  image_url?: string;
+  category?: string;
+}
+
 // Fetch blog posts from Supabase
 async function getBlogPosts(): Promise<BlogPost[]> {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -42,7 +54,7 @@ async function getBlogPosts(): Promise<BlogPost[]> {
   }
 
   // Map database fields to BlogPost interface
-  return posts.map((post: any) => ({
+  return posts.map((post: DatabaseBlogPost) => ({
     id: post.slug || post.id.toString(),
     title: post.title,
     excerpt: post.excerpt || 'No excerpt available',

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 export const revalidate = 3600;
 
 async function getGameplayItem(slug: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('gameplay_items')
     .select('*')
@@ -18,12 +18,7 @@ async function getGameplayItem(slug: string) {
   return data;
 }
 
-// Generate static paths for existing gameplay clips
-export async function generateStaticParams() {
-  const supabase = createClient();
-  const { data: items } = await supabase.from('gameplay_items').select('slug');
-  return items?.map(({ slug }) => ({ slug })) || [];
-}
+// No generateStaticParams because it would require cookies() which can't be used at build time
 
 // Helper to convert regular YouTube URL to embeddable URL
 const getEmbedUrl = (url: string) => {
@@ -44,8 +39,9 @@ const getEmbedUrl = (url: string) => {
   }
 };
 
-export default async function GameplayDetailPage({ params }: { params: { slug: string } }) {
-  const item = await getGameplayItem(params.slug);
+export default async function GameplayDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const item = await getGameplayItem(slug);
   const embedUrl = getEmbedUrl(item.video_url);
 
   return (
