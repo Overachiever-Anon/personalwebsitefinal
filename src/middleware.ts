@@ -67,7 +67,7 @@ export async function middleware(request: NextRequest) {
     }
 
     return response;
-  } catch (e) {
+  } catch (_e) {
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set NEXT_PUBLIC_SUPABASE_URL
     // or NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env file.
