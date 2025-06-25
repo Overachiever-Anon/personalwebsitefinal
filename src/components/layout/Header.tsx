@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from '@/utils/supabase/client';
 import { type User } from '@supabase/supabase-js';
@@ -19,12 +19,21 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const supabase = createClient();
   const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        setVisible(false);
+      } else {
+        setVisible(true);
+      }
+      lastScrollY.current = currentScrollY;
+      setScrolled(currentScrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
 
@@ -48,8 +57,8 @@ export default function Header() {
   };
 
   return (
-    <header 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-background/90 backdrop-blur-md shadow-md" : "bg-transparent"}`}>
+        <header 
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-background/90 backdrop-blur-md shadow-md" : "bg-transparent"} ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <nav className="container-main py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-x-2">
           <div className="relative w-8 h-8 overflow-hidden">

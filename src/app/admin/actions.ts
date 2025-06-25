@@ -20,7 +20,7 @@ export async function deleteItem(
     }
 
     // Validate tableName against allowed values to prevent SQL injection
-    const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_items'];
+    const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_clips'];
     if (!allowedTables.includes(tableName)) {
       console.error('Invalid table name:', tableName);
       return { success: false, error: 'Invalid table name provided.' };
@@ -75,7 +75,7 @@ export async function updateItem(formData: FormData) {
     }
     
     // Validate tableName against allowed values to prevent SQL injection
-    const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_items'];
+    const allowedTables = ['blog_posts', 'projects', 'code_items', 'research_notes', 'gameplay_clips'];
     if (!allowedTables.includes(tableName)) {
       console.error('Invalid table name:', tableName);
       return;
@@ -85,8 +85,14 @@ export async function updateItem(formData: FormData) {
     let slug: string | null = null;
 
     try {
+      // Handle the 'featured' checkbox explicitly to correctly set it to false when unchecked.
+      if (tableName === 'blog_posts' || tableName === 'gameplay_items') {
+        updateData.featured = formData.get('featured') === 'on';
+      }
+
       for (const [key, value] of formData.entries()) {
-        if (key === 'id' || key === 'tableName') continue;
+        // Skip keys that are handled separately or are not part of the table schema
+        if (key === 'id' || key === 'tableName' || key === 'featured') continue;
 
         if (key === 'slug') {
           slug = value as string;
@@ -94,7 +100,7 @@ export async function updateItem(formData: FormData) {
 
         if (key === 'tags' && typeof value === 'string') {
           updateData[key] = value.split(',').map(tag => tag.trim()).filter(Boolean);
-        } else if (key === 'is_published' || key === 'featured') {
+        } else if (key === 'is_published') {
           updateData[key] = value === 'on';
         } else {
           updateData[key] = value;
@@ -116,7 +122,7 @@ export async function updateItem(formData: FormData) {
         'projects': 'projects',
         'code_items': 'code',
         'research_notes': 'research',
-        'gameplay_items': 'gameplay',
+        'gameplay_clips': 'gameplay',
       };
       const sectionSlug = sectionSlugMap[tableName];
 

@@ -37,7 +37,7 @@ export default async function EditItemPage({ params }: { params: Promise<{ table
     'projects': 'Project',
     'code_items': 'Code Item',
     'research_notes': 'Research Note',
-    'gameplay_items': 'Gameplay Clip',
+    'gameplay_clips': 'Gameplay Clip',
   };
 
   const title = sectionTitleMap[tableName] || 'Item';
