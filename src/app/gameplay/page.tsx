@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/utils/supabase/server';
 
-export const revalidate = 3600;
 
 interface GameplayItem {
   id: string;

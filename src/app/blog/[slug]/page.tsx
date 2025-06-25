@@ -1,4 +1,6 @@
 // src/app/blog/[slug]/page.tsx
+export const dynamic = 'force-dynamic';
+
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'

@@ -3,7 +3,6 @@ export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 
-export const revalidate = 3600;
 
 interface ResearchNote {
   id: string;
