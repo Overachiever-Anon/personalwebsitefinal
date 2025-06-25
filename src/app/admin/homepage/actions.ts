@@ -10,7 +10,7 @@ export type FormState = {
   success?: string;
 };
 
-export async function updateHero(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function updateHero(_prevState: FormState, formData: FormData): Promise<FormState> {
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -63,7 +63,7 @@ export async function updateHero(prevState: FormState, formData: FormData): Prom
   return { success: 'Hero section updated successfully.' };
 }
 
-export async function addSkill(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function addSkill(_prevState: FormState, formData: FormData): Promise<FormState> {
   const supabase = await createServerClient();
   const skillData = {
     name: formData.get('name') as string,
@@ -86,7 +86,7 @@ export async function addSkill(prevState: FormState, formData: FormData): Promis
   return { success: 'Skill added successfully.' };
 }
 
-export async function deleteSkill(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function deleteSkill(_prevState: FormState, formData: FormData): Promise<FormState> {
   const supabase = await createServerClient();
   const id = formData.get('id') as string;
 
@@ -106,7 +106,7 @@ export async function deleteSkill(prevState: FormState, formData: FormData): Pro
   return { success: 'Skill deleted successfully.' };
 }
 
-export async function addTimelineEvent(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function addTimelineEvent(_prevState: FormState, formData: FormData): Promise<FormState> {
   const supabase = await createServerClient();
   const eventData = {
     date: formData.get('date') as string,
@@ -130,7 +130,7 @@ export async function addTimelineEvent(prevState: FormState, formData: FormData)
   return { success: 'Timeline event added successfully.' };
 }
 
-export async function deleteTimelineEvent(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function deleteTimelineEvent(_prevState: FormState, formData: FormData): Promise<FormState> {
   const supabase = await createServerClient();
   const id = formData.get('id') as string;
 

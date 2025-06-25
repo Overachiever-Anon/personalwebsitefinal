@@ -30,7 +30,7 @@ function DeleteSkillSubmit() {
 }
 
 function DeleteSkillForm({ skillId }: { skillId: string }) {
-  const [state, formAction] = useFormState(deleteSkill, initialState);
+  const [_state, formAction] = useFormState(deleteSkill, initialState);
   // You can display the state (error/success) here if needed
   return (
     <form action={formAction}>
@@ -40,7 +40,13 @@ function DeleteSkillForm({ skillId }: { skillId: string }) {
   );
 }
 
-export default function SkillsManager({ skills }: { skills: any[] }) {
+type Skill = {
+  id: string;
+  name: string;
+  icon_svg?: string;
+};
+
+export default function SkillsManager({ skills }: { skills: Skill[] }) {
   const [addState, addFormAction] = useFormState(addSkill, initialState);
   const addFormRef = useRef<HTMLFormElement>(null);
 

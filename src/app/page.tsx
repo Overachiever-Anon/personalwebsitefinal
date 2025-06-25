@@ -38,6 +38,44 @@ async function getHomepageContent() {
   };
 }
 
+type Hero = {
+  title?: string;
+  subtitle?: string;
+  profile_image_url?: string;
+  cta_text?: string;
+  cta_link?: string;
+};
+
+type Skill = {
+  id: string;
+  name: string;
+  icon_svg?: string;
+};
+
+type BlogPost = {
+  id: string;
+  slug: string;
+  image_url?: string;
+  title: string;
+  created_at: string;
+  excerpt?: string;
+};
+
+type GameplayClip = {
+  id: string;
+  slug: string;
+  thumbnail_url?: string;
+  title: string;
+  game: string;
+};
+
+type TimelineEvent = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+};
+
 export default async function Home() {
   const { hero, skills, timelineEvents, featuredBlogs, featuredGameplay } = await getHomepageContent();
 
@@ -89,7 +127,7 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-center">Skills & Expertise</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {skills.map((skill: any) => (
+            {skills.map((skill: Skill) => (
               <div key={skill.id} className="p-6 bg-background rounded-xl shadow-lg hover:shadow-accent/20 transition-all duration-300 flex flex-col items-center text-center">
                 {skill.icon_svg ? (
                   <div dangerouslySetInnerHTML={{ __html: skill.icon_svg }} className="w-12 h-12 mb-4 text-accent" />
@@ -109,7 +147,7 @@ export default async function Home() {
           <div className="mb-16">
             <h2 className="text-3xl font-bold mb-8">Featured Blog Posts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredBlogs.map((blog: any) => (
+              {featuredBlogs.map((blog: BlogPost) => (
                 <Link key={blog.id} href={`/blog/${blog.slug}`} className="group">
                   <div className="bg-background-light rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] shadow-lg">
                     <div className="h-48 bg-gray-800 relative">
@@ -148,7 +186,7 @@ export default async function Home() {
           <div>
             <h2 className="text-3xl font-bold mb-8">Gaming Highlights</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredGameplay.map((clip: any) => (
+              {featuredGameplay.map((clip: GameplayClip) => (
                 <Link key={clip.id} href={`/gameplay/${clip.slug}`} className="group">
                   <div className="bg-background-light rounded-xl overflow-hidden transition-all duration-300 group-hover:scale-[1.02] shadow-lg relative">
                     <div className="h-48 bg-gray-800 relative">
@@ -205,7 +243,7 @@ export default async function Home() {
             
             {/* Timeline events */}
             <div className="space-y-16">
-              {timelineEvents.map((event: any, index: number) => (
+              {timelineEvents.map((event: TimelineEvent, index: number) => (
                 <div key={event.id} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   {/* Content side */}
                   <div className={`w-5/12 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>

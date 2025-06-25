@@ -24,7 +24,15 @@ function SubmitButton() {
   );
 }
 
-export default function HeroForm({ heroData }: { heroData: any }) {
+type HeroData = {
+  title?: string;
+  subtitle?: string;
+  profile_image_url?: string;
+  cta_text?: string;
+  cta_link?: string;
+};
+
+export default function HeroForm({ heroData }: { heroData: HeroData }) {
   const [state, formAction] = useFormState(updateHero, initialState);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 

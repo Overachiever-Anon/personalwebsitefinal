@@ -21,7 +21,7 @@ function SubmitButton({ text, pendingText }: { text: string; pendingText: string
 }
 
 function DeleteTimelineEventForm({ eventId }: { eventId: string }) {
-  const [state, formAction] = useFormState(deleteTimelineEvent, initialState);
+  const [_state, formAction] = useFormState(deleteTimelineEvent, initialState);
   return (
     <form action={formAction}>
       <input type="hidden" name="id" value={eventId} />
@@ -32,7 +32,14 @@ function DeleteTimelineEventForm({ eventId }: { eventId: string }) {
   );
 }
 
-export default function TimelineManager({ timeline }: { timeline: any[] }) {
+type TimelineEvent = {
+  id: string;
+  date: string;
+  title: string;
+  description: string;
+};
+
+export default function TimelineManager({ timeline }: { timeline: TimelineEvent[] }) {
   const [addState, addFormAction] = useFormState(addTimelineEvent, initialState);
   const addFormRef = useRef<HTMLFormElement>(null);
 
