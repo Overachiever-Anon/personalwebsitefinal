@@ -1,4 +1,6 @@
 import Link from 'next/link';
+export const dynamic = 'force-dynamic';
+
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import ProjectCard from '@/components/code/ProjectCard';

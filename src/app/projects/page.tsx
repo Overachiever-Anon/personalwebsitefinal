@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+export const dynamic = 'force-dynamic';
+
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
