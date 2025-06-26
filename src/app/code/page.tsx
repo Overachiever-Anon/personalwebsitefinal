@@ -1,8 +1,7 @@
 import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 import ProjectCard from '@/components/code/ProjectCard';
 
 export const revalidate = 3600;
@@ -19,18 +18,7 @@ interface CodeItem {
 }
 
 async function getCodeItems(): Promise<CodeItem[]> {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('code_items')
@@ -51,11 +39,10 @@ export default async function CodePage() {
 
   return (
     <div className="min-h-screen py-12">
-      <div className="relative container-main mb-16">
-        <div className="absolute -inset-1 bg-gradient-to-r from-accent-secondary to-accent opacity-30 blur-md"></div>
-        <div className="relative bg-card border border-border p-8 rounded-lg">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Code Showcase</h1>
-          <p className="text-text-secondary text-lg max-w-3xl">
+      <div className="container-main mb-12">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">Code Showcase</h1>
+          <p className="text-text-secondary text-lg text-center mb-8 max-w-2xl mx-auto">
             A collection of code projects, implementations, and experiments that demonstrate my technical skills and problem-solving approaches across various domains.
           </p>
         </div>

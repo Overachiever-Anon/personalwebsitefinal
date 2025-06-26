@@ -37,11 +37,10 @@ export default async function GameplayPage() {
   
   return (
     <div className="min-h-screen py-12">
-      <div className="relative container-main mb-16">
-        <div className="absolute -inset-1 bg-gradient-to-r from-secondary to-accent-secondary opacity-30 blur-md"></div>
-        <div className="relative bg-card border border-border p-8 rounded-lg">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Gameplay Collection</h1>
-          <p className="text-text-secondary text-lg max-w-3xl">
+      <div className="container-main mb-12">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">Gameplay Collection</h1>
+          <p className="text-text-secondary text-lg text-center mb-8 max-w-2xl mx-auto">
             A showcase of gaming highlights, achievements, and creative gameplay across various titles. From competitive moments to technical demonstrations.
           </p>
         </div>
