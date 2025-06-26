@@ -2,42 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createServerClient } from '@/utils/supabase';
 
-async function getHomepageContent() {
-  const supabase = await createServerClient();
-
-  // Helper to fetch data and handle errors gracefully.
-  const fetchData = async (query: any) => {
-    const { data, error } = await query;
-    if (error) {
-      console.error('Error fetching data:', error.message);
-      return []; // Return empty array on error to prevent crashes.
-    }
-    return data || []; // Return data or empty array if data is null.
-  };
-
-  const [
-    hero,
-    skills,
-    timeline,
-    blogPosts,
-    gameplayClips,
-  ] = await Promise.all([
-    fetchData(supabase.from('homepage_hero').select('*')),
-    fetchData(supabase.from('homepage_skills').select('*').order('id', { ascending: true })),
-    fetchData(supabase.from('homepage_timeline').select('*').order('date', { ascending: false })),
-    fetchData(supabase.from('blog_posts').select('*').eq('featured', true).order('created_at', { ascending: false })),
-    fetchData(supabase.from('gameplay_clips').select('*').eq('featured', true).order('created_at', { ascending: false }))
-  ]);
-
-  return {
-    hero: hero[0] || {},
-    skills: skills || [],
-    timelineEvents: timeline || [],
-    featuredBlogs: blogPosts || [],
-    featuredGameplay: gameplayClips || [],
-  };
-}
-
+// Define types for our data structures
 type Hero = {
   title?: string;
   subtitle?: string;
@@ -76,6 +41,49 @@ type TimelineEvent = {
   date: string;
 };
 
+async function getHomepageContent(): Promise<{
+  hero: Hero;
+  skills: Skill[];
+  timelineEvents: TimelineEvent[];
+  featuredBlogs: BlogPost[];
+  featuredGameplay: GameplayClip[];
+}> {
+  const supabase = await createServerClient();
+
+  // Helper to fetch data and handle errors gracefully.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fetchData = async (query: any) => {
+    const { data, error } = await query;
+    if (error) {
+      console.error('Error fetching data:', error.message);
+      return []; // Return empty array on error to prevent crashes.
+    }
+    return data || []; // Return data or empty array if data is null.
+  };
+
+  const [
+    hero,
+    skills,
+    timeline,
+    blogPosts,
+    gameplayClips,
+  ] = await Promise.all([
+    fetchData(supabase.from('homepage_hero').select('*')),
+    fetchData(supabase.from('homepage_skills').select('*').order('id', { ascending: true })),
+    fetchData(supabase.from('homepage_timeline').select('*').order('date', { ascending: false })),
+    fetchData(supabase.from('blog_posts').select('*').eq('featured', true).order('created_at', { ascending: false })),
+    fetchData(supabase.from('gameplay_clips').select('*').eq('featured', true).order('created_at', { ascending: false })),
+  ]);
+
+  return {
+    hero: hero[0] || {},
+    skills: skills || [],
+    timelineEvents: timeline || [],
+    featuredBlogs: blogPosts || [],
+    featuredGameplay: gameplayClips || [],
+  };
+}
+
 export default async function Home() {
   const { hero, skills, timelineEvents, featuredBlogs, featuredGameplay } = await getHomepageContent();
 
@@ -89,7 +97,7 @@ export default async function Home() {
               <h1 className="text-5xl font-bold mb-6 text-white leading-tight">{hero.title || "Andreas Kurz"}</h1>
               <p className="text-2xl mb-4 text-accent">{hero.subtitle || "Researcher, Developer, Gaming Enthusiast"}</p>
               <p className="text-lg mb-8 text-gray-300">
-                I'm passionate about pushing the boundaries of what's possible through research and development. 
+                I&apos;m passionate about pushing the boundaries of what&apos;s possible through research and development. 
                 With expertise in AI, web development, and a love for gaming, I create solutions 
                 that blend technical excellence with user-centered design.
               </p>
@@ -127,7 +135,7 @@ export default async function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-12 text-center">Skills & Expertise</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {skills.map((skill: Skill) => (
+            {skills.map((skill) => (
               <div key={skill.id} className="p-6 bg-background rounded-xl shadow-lg hover:shadow-accent/20 transition-all duration-300 flex flex-col items-center text-center">
                 {skill.icon_svg ? (
                   <div dangerouslySetInnerHTML={{ __html: skill.icon_svg }} className="w-12 h-12 mb-4 text-accent" />
@@ -147,7 +155,7 @@ export default async function Home() {
           <div className="mb-16">
             <h2 className="text-3xl font-bold mb-8">Featured Blog Posts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredBlogs.map((blog: BlogPost) => (
+              {featuredBlogs.map((blog) => (
                 <Link key={blog.id} href={`/blog/${blog.slug}`} className="group">
                   <div className="bg-background-light rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-[1.02] shadow-lg">
                     <div className="h-48 bg-gray-800 relative">
@@ -186,7 +194,7 @@ export default async function Home() {
           <div>
             <h2 className="text-3xl font-bold mb-8">Gaming Highlights</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredGameplay.map((clip: GameplayClip) => (
+              {featuredGameplay.map((clip) => (
                 <Link key={clip.id} href={`/gameplay/${clip.slug}`} className="group">
                   <div className="bg-background-light rounded-xl overflow-hidden transition-all duration-300 group-hover:scale-[1.02] shadow-lg relative">
                     <div className="h-48 bg-gray-800 relative">
@@ -243,7 +251,7 @@ export default async function Home() {
             
             {/* Timeline events */}
             <div className="space-y-16">
-              {timelineEvents.map((event: TimelineEvent, index: number) => (
+              {timelineEvents.map((event, index) => (
                 <div key={event.id} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   {/* Content side */}
                   <div className={`w-5/12 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>
@@ -274,7 +282,7 @@ export default async function Home() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Interested in working together?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-300">
-            Whether you're looking for a research collaborator, developer, or just want to connect, I'd love to hear from you.
+            Whether you&apos;re looking for a research collaborator, developer, or just want to connect, I&apos;d love to hear from you.
           </p>
           <Link href="/contact" className="px-8 py-4 bg-accent hover:bg-accent/80 text-white font-medium rounded-lg transition-all duration-300 inline-block">
             Get in Touch
