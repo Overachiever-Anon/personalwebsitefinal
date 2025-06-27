@@ -92,8 +92,7 @@ export default async function BlogPage() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">Blog</h1>
           <p className="text-text-secondary text-lg text-center mb-8 max-w-2xl mx-auto">
-            Thoughts, analyses, and explorations across various domains including technology, 
-            research, design, and academic writing.
+            My personal thoughts on Politics, Technology, and snippets of my personal life
           </p>
           
           {/* Search and Tag Filters */}

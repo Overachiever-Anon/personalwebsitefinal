@@ -31,10 +31,67 @@ async function getGameplayItems(): Promise<GameplayItem[]> {
   return data;
 }
 
+async function getSteamStats() {
+  try {
+    const apiKey = process.env.STEAM_API_KEY;
+    const steamId = process.env.STEAM_USER_ID;
+    console.log('--- Checking Steam Credentials ---');
+    console.log('Found STEAM_API_KEY:', !!apiKey && apiKey !== 'YOUR_STEAM_API_KEY');
+    console.log('Found STEAM_USER_ID:', !!steamId && steamId !== 'YOUR_64_BIT_STEAM_ID');
+    console.log('--------------------------------');
+
+    if (!apiKey || !steamId || apiKey === 'YOUR_STEAM_API_KEY' || steamId === 'YOUR_64_BIT_STEAM_ID') {
+      console.warn('Steam API key or User ID is not set in environment variables. Skipping fetch.');
+      return {
+        totalGames: 'N/A',
+        hoursPlayed: 'N/A',
+      };
+    }
+
+    try {
+      const response = await fetch(`http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${apiKey}&steamid=${steamId}&format=json&include_appinfo=true`);
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error(`Steam API request failed with status ${response.status}: ${errorBody}`);
+        return { totalGames: 'Error', hoursPlayed: 'Error' };
+      }
+      const data = await response.json();
+
+      if (!data.response || !data.response.games) {
+        console.error('Invalid response from Steam API. Your profile may be private.');
+        return { totalGames: 'N/A', hoursPlayed: 'N/A' };
+      }
+
+      const totalGames = data.response.game_count;
+      const totalMinutesPlayed = data.response.games.reduce((sum: number, game: any) => sum + game.playtime_forever, 0);
+      const hoursPlayed = Math.round(totalMinutesPlayed / 60);
+
+      return {
+        totalGames: totalGames.toLocaleString(),
+        hoursPlayed: hoursPlayed.toLocaleString(),
+      };
+    } catch (error) {
+      console.error('Error fetching Steam stats:', error);
+      return { totalGames: 'Error', hoursPlayed: 'Error' };
+    }
+  } catch (error) {
+    console.error('Error fetching Steam stats:', error);
+    return { totalGames: 'Error', hoursPlayed: 'Error' };
+  }
+}
+
 export default async function GameplayPage() {
   const gameplayItems = await getGameplayItems();
   const games = [...new Set(gameplayItems.map(clip => clip.game_name))];
+  const steamStats = await getSteamStats();
   
+  const stats = [
+    { label: 'Total Games', value: steamStats.totalGames },
+    { label: 'Hours Played', value: steamStats.hoursPlayed ? `${steamStats.hoursPlayed.toLocaleString()}+` : 'N/A' },
+    { label: 'Tournaments', value: '12' }, // Static for now
+    { label: 'Achievements', value: 'N/A' } // Placeholder
+  ];
+
   return (
     <div className="min-h-screen py-12">
       <div className="container-main mb-12">
@@ -104,18 +161,18 @@ export default async function GameplayPage() {
         
         <div className="card p-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Total Games', value: '25+' },
-              { label: 'Hours Played', value: '5,000+' },
-              { label: 'Tournaments', value: '12' },
-              { label: 'Achievements', value: '867' }
-            ].map((stat, i) => (
+            {stats.map((stat, i) => (
               <div key={i} className="text-center p-4">
                 <div className="text-2xl md:text-4xl font-bold text-accent mb-2">{stat.value}</div>
                 <div className="text-text-secondary text-sm">{stat.label}</div>
               </div>
             ))}
           </div>
+          {(steamStats.totalGames === 'N/A' || steamStats.totalGames === 'Error') && (
+            <p className="text-center text-text-secondary mt-4 text-sm">
+              Could not fetch Steam stats. Please ensure your API key and Steam ID are correct in <code>.env.local</code> and your Steam profile is public.
+            </p>
+          )}
         </div>
       </section>
     </div>

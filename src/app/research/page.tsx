@@ -54,7 +54,7 @@ export default async function ResearchPage() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">Research</h1>
           <p className="text-text-secondary text-lg text-center mb-8 max-w-2xl mx-auto">
-            Academic publications, working papers, and research projects exploring areas including quantum computing, machine learning, data visualization, and more.
+            My personal research
           </p>
         </div>
       </div>
@@ -118,36 +118,7 @@ export default async function ResearchPage() {
         ))}
       </section>
       
-      {/* Research Collaborators */}
-      <section className="container-main py-12">
-        <h2 className="section-heading mb-8">Collaborators</h2>
-        <div className="card p-6">
-          <p className="text-text-secondary mb-6">
-            My research is conducted in collaboration with excellent scholars and institutions from around the world.
-            If you are interested in potential collaboration opportunities, please reach out via the contact page.
-          </p>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[
-              "Stanford University",
-              "MIT",
-              "ETH Zurich",
-              "Tsinghua University",
-              "Tokyo Institute of Technology",
-              "Max Planck Institute",
-              "University of Oxford",
-              "Carnegie Mellon University"
-            ].map((institution, i) => (
-              <div 
-                key={i} 
-                className="p-4 bg-background/30 rounded text-center hover:bg-background/50 transition-colors"
-              >
-                {institution}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }
