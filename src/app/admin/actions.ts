@@ -195,7 +195,7 @@ export async function uploadImage(formData: FormData): Promise<{ url?: string; e
         return { error: `Failed to upload image: ${uploadError.message}` };
       }
 
-      const { data } = supabase.storage.from('assets-projects').getPublicUrl(filePath);
+      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
       if (!data || !data.publicUrl) {
         return { error: 'Failed to get public URL for uploaded image.' };
       }

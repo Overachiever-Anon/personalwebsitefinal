@@ -24,6 +24,7 @@ export async function updateHero(_prevState: FormState, formData: FormData): Pro
     profile_image_url: formData.get('profile_image_url') as string,
     cta_text: formData.get('cta_text') as string,
     cta_link: formData.get('cta_link') as string,
+    description: formData.get('description') as string,
   };
 
   // Check if a hero record exists

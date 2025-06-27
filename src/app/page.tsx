@@ -9,6 +9,7 @@ type Hero = {
   profile_image_url?: string;
   cta_text?: string;
   cta_link?: string;
+  description?: string;
 };
 
 type Skill = {
@@ -97,9 +98,7 @@ export default async function Home() {
               <h1 className="text-5xl font-bold mb-6 text-white leading-tight">{hero.title || "Andreas Kurz"}</h1>
               <p className="text-2xl mb-4 text-accent">{hero.subtitle || "Researcher, Developer, Gaming Enthusiast"}</p>
               <p className="text-lg mb-8 text-gray-300">
-                I&apos;m passionate about pushing the boundaries of what&apos;s possible through research and development. 
-                With expertise in AI, web development, and a love for gaming, I create solutions 
-                that blend technical excellence with user-centered design.
+                {hero.description || "I'm passionate about pushing the boundaries of what's possible through research and development. With expertise in AI, web development, and a love for gaming, I create solutions that blend technical excellence with user-centered design."}
               </p>
               <div className="flex gap-4">
                 <Link href={hero.cta_link || "/projects"} className="px-6 py-3 bg-accent hover:bg-accent/80 text-white font-medium rounded-lg transition-all duration-300">

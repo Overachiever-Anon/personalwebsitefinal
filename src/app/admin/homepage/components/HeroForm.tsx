@@ -1,8 +1,8 @@
 // src/app/admin/homepage/components/HeroForm.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { updateHero, type FormState } from '../actions';
 
 const initialState: FormState = {
@@ -30,10 +30,11 @@ type HeroData = {
   profile_image_url?: string;
   cta_text?: string;
   cta_link?: string;
+  description?: string;
 };
 
 export default function HeroForm({ heroData }: { heroData: HeroData }) {
-  const [state, formAction] = useFormState(updateHero, initialState);
+  const [state, formAction] = useActionState(updateHero, initialState);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
   useEffect(() => {
@@ -70,6 +71,16 @@ export default function HeroForm({ heroData }: { heroData: HeroData }) {
       <div>
         <label htmlFor="cta_link" className="block text-sm font-medium text-text-secondary mb-1">CTA Button Link</label>
         <input type="text" id="cta_link" name="cta_link" defaultValue={heroData.cta_link || ''} className="w-full bg-background border border-border/50 rounded-lg p-2 focus:ring-accent focus:border-accent" />
+      </div>
+      <div>
+        <label htmlFor="description" className="block text-sm font-medium text-text-secondary mb-1">About Description</label>
+        <textarea 
+          id="description" 
+          name="description" 
+          defaultValue={heroData.description || ''} 
+          className="w-full bg-background border border-border/50 rounded-lg p-2 focus:ring-accent focus:border-accent min-h-[120px]"
+          placeholder="Enter your about description here..."
+        />
       </div>
       <div className="flex items-center gap-4">
         <SubmitButton />

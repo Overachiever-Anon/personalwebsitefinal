@@ -5,7 +5,7 @@ import { createServerClient } from '@/utils/supabase';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import DeleteButton from './components/DeleteButton';
-import { Home } from 'lucide-react';
+import { Home, FileText } from 'lucide-react';
 
 // Define types for our content items
 type ContentItem = {
@@ -256,6 +256,13 @@ export default async function AdminDashboard() {
               </div>
               <h2 className="text-xl font-semibold text-text">Homepage</h2>
               <p className="text-sm text-text-secondary">Edit hero, skills, & timeline</p>
+            </Link>
+            <Link href="/admin/resume" className="bg-background/60 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:bg-background/70 transition-all duration-200 flex flex-col items-center justify-center text-center">
+              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+                <FileText className="w-6 h-6 text-accent" />
+              </div>
+              <h2 className="text-xl font-semibold text-text">Resume/CV</h2>
+              <p className="text-sm text-text-secondary">Edit experience, education & skills</p>
             </Link>
           </div>
         </div>

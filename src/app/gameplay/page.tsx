@@ -63,7 +63,15 @@ async function getSteamStats() {
       }
 
       const totalGames = data.response.game_count;
-      const totalMinutesPlayed = data.response.games.reduce((sum: number, game: any) => sum + game.playtime_forever, 0);
+      // Define interface for Steam game object
+      interface SteamGame {
+        playtime_forever: number;
+        appid: number;
+        name?: string;
+        [key: string]: any; // Allow for other properties
+      }
+      
+      const totalMinutesPlayed = data.response.games.reduce((sum: number, game: SteamGame) => sum + game.playtime_forever, 0);
       const hoursPlayed = Math.round(totalMinutesPlayed / 60);
 
       return {
