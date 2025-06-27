@@ -19,10 +19,6 @@ type PersonalInfo = {
   profile_image_url?: string;
 };
 
-type FormState = {
-  error?: string;
-  success?: string;
-};
 
 function SubmitButton() {
   const { pending } = useFormStatus();

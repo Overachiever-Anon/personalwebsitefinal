@@ -37,7 +37,7 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export default function ProjectsManager({ projects }: { projects: Project[] }) {
   const [formState, formAction] = useActionState(addProject, { error: undefined, success: undefined });
   const [editFormState, editFormAction] = useActionState(updateProject, { error: undefined, success: undefined });
-  const [deleteFormState, deleteFormAction] = useActionState(deleteProject, { error: undefined, success: undefined });
+  const [_deleteFormState, deleteFormAction] = useActionState(deleteProject, { error: undefined, success: undefined });
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

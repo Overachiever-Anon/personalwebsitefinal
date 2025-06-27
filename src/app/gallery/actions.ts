@@ -2,7 +2,7 @@
 
 import { createServerClient } from '@/utils/supabase';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+
 
 export async function deleteGalleryImage(imageId: string): Promise<{ success: boolean; error?: string }> {
   try {

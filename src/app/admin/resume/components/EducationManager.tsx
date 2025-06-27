@@ -37,7 +37,7 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export default function EducationManager({ education }: { education: Education[] }) {
   const [formState, formAction] = useActionState(addEducation, { error: undefined, success: undefined });
   const [editFormState, editFormAction] = useActionState(updateEducation, { error: undefined, success: undefined });
-  const [deleteFormState, deleteFormAction] = useActionState(deleteEducation, { error: undefined, success: undefined });
+  const [_deleteFormState, deleteFormAction] = useActionState(deleteEducation, { error: undefined, success: undefined });
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

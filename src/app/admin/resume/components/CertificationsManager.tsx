@@ -34,7 +34,7 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export default function CertificationsManager({ certifications }: { certifications: Certification[] }) {
   const [formState, formAction] = useActionState(addCertification, { error: undefined, success: undefined });
   const [editFormState, editFormAction] = useActionState(updateCertification, { error: undefined, success: undefined });
-  const [deleteFormState, deleteFormAction] = useActionState(deleteCertification, { error: undefined, success: undefined });
+  const [_deleteFormState, deleteFormAction] = useActionState(deleteCertification, { error: undefined, success: undefined });
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

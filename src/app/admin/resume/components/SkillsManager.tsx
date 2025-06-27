@@ -30,7 +30,7 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export default function SkillsManager({ skills }: { skills: Skill[] }) {
   const [formState, formAction] = useActionState(addSkill, { error: undefined, success: undefined });
   const [editFormState, editFormAction] = useActionState(updateSkill, { error: undefined, success: undefined });
-  const [deleteFormState, deleteFormAction] = useActionState(deleteSkill, { error: undefined, success: undefined });
+  const [_deleteFormState, deleteFormAction] = useActionState(deleteSkill, { error: undefined, success: undefined });
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

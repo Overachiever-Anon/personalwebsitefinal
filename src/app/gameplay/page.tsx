@@ -68,7 +68,7 @@ async function getSteamStats() {
         playtime_forever: number;
         appid: number;
         name?: string;
-        [key: string]: any; // Allow for other properties
+        [key: string]: number | string | boolean | null | undefined; // Allow for other properties
       }
       
       const totalMinutesPlayed = data.response.games.reduce((sum: number, game: SteamGame) => sum + game.playtime_forever, 0);

@@ -3,7 +3,7 @@
 
 import { useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Briefcase, Plus, Pencil, Trash2, Check, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { Briefcase, Plus, Pencil, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { addExperience, updateExperience, deleteExperience } from '../actions';
 
 type Experience = {
@@ -36,12 +36,12 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export default function ExperienceManager({ experience }: { experience: Experience[] }) {
   const [formState, formAction] = useActionState(addExperience, { error: undefined, success: undefined });
   const [editFormState, editFormAction] = useActionState(updateExperience, { error: undefined, success: undefined });
-  const [deleteFormState, deleteFormAction] = useActionState(deleteExperience, { error: undefined, success: undefined });
+  const [_deleteFormState, deleteFormAction] = useActionState(deleteExperience, { error: undefined, success: undefined });
   
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  const [message, _setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
   const toggleExpanded = (id: string) => {
     if (expandedItems.includes(id)) {

@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import { createServerClient } from '@/utils/supabase';
-import { redirect } from 'next/navigation';
+
 import ResumeHeader from './components/ResumeHeader';
 import ResumeExperience from './components/ResumeExperience';
 import ResumeEducation from './components/ResumeEducation';
